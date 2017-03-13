@@ -1,0 +1,1 @@
+/* A SnakeElement in the game */
