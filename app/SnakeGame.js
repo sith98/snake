@@ -1,27 +1,20 @@
-var game = (function () {
+const game = (function () {
+	let canvas;
+	let ctx;
 
-	var privateContext;
-	var privateCanvas;
-
-	/* Game Constants */
-	var GAME_WIDTH;
-	var GAME_HEIGHT;
-    var RASTER_SIZE = 10;  // i.e. size of snake elements and apples
-
-	var snake;
-    var apple;
-    var counter;
+	let snake;
+    let apple;
+    let counter;
     
     /* Variables and constants to control framerate */
-    var FPS = 10; /* change this to change framerate in the game */
-    var now;
-    var then = Date.now();
-    var interval = 1000/FPS;
-    var delta;
+    const FPS = 10; /* change this to change framerate in the game */
+    let now;
+    let then = Date.now();
+    const interval = 1000/FPS;
+    let delta;
 
 	// Draws the canvas
-	function privateDraw() {
-        window.requestAnimationFrame(privateDraw);
+	function loop() {
         
         now = Date.now();
         delta = now - then;
@@ -31,28 +24,24 @@ var game = (function () {
             console.log("Tick, now drawing with: " + FPS + "fps!");
             // draw and check collisions here...
         }
-	}
-
-	// Setzt den Canvas und dessen Context als Variablen
-	function privateSetContext(canvas) {
-		privateCanvas = canvas;
-		privateContext = canvas.getContext("2d");
+        
+        requestAnimationFrame(loop);
 	}
     
-    /* Todo: Call this function only after player has pressed the start key */
-    function privateStartGame() {
-        /* Todo: initialize objects (i.e. apple, snake, counter) here */
-        window.requestAnimationFrame(privateDraw);
+    function startGame() {
+        requestAnimationFrame(loop);
     }
 
-	function publicInit(canvas) {
-		GAME_HEIGHT = canvas.height;
-        GAME_WIDTH = canvas.width;
-        privateSetContext(canvas);
-        privateStartGame();
+	function init(canvas) {
+        canvas.width = GAME_WIDTH;
+		canvas.height = GAME_HEIGHT;
+        
+        ctx = canvas.getContext("2d");
+        
+        startGame();
 	}
     
 	return {
-		init: publicInit
+		init
 	};
 })();
