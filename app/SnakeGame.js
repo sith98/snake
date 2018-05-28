@@ -6,6 +6,10 @@ const game = (function () {
     let apple;
     let counter;
     
+    const WIDTH= 300;
+    const HEIGHT= 300;
+    const GRID_SIZE= 10;
+    
     /* Variables and constants to control framerate */
     const FPS = 10; /* change this to change framerate in the game */
     let now;
@@ -14,29 +18,55 @@ const game = (function () {
     let delta;
 
 	// Draws the canvas
-	function loop() {
-        
+	const loop = () => {
         now = Date.now();
         delta = now - then;
         
         if (delta > interval) {
             then = now - (delta % interval);
-            console.log("Tick, now drawing with: " + FPS + "fps!");
-            // draw and check collisions here...
+            update();
+            draw();
         }
-        
         requestAnimationFrame(loop);
 	}
     
-    function startGame() {
+    const update = () => {
+        snake.update(apple, newApple)
+    }
+    const draw = () => {
+        ctx.clearRect(0, 0, Dimensions.WIDTH, Dimensions.HEIGHT);
+        snake.draw(ctx, GRID_SIZE);
+        apple.draw(ctx, GRID_SIZE);
+    }
+    
+    const onKeyDown = (evt) => {
+        snake.onKeyDown(evt)
+    }
+    
+    const newApple = () => {
+        apple = makeApple(
+            Math.floor(WIDTH / GRID_SIZE),
+            Math.floor(HEIGHT / GRID_SIZE)
+        )
+    }
+    
+    const startGame = () => {
+        const centerX = Math.floor(WIDTH / GRID_SIZE / 2)
+        const centerY = Math.floor(HEIGHT / GRID_SIZE / 2)
+        
+        snake = makeSnake(centerX, centerY);
+        newApple()
+        
         requestAnimationFrame(loop);
     }
 
-	function init(canvas) {
-        canvas.width = GAME_WIDTH;
-		canvas.height = GAME_HEIGHT;
+	const init = (canvas) => {
+        canvas.width = WIDTH;
+		canvas.height = HEIGHT;
         
         ctx = canvas.getContext("2d");
+        
+        document.body.addEventListener("keydown", onKeyDown)
         
         startGame();
 	}
