@@ -4,8 +4,8 @@ const game = (function () {
 
     let state;
 
-    const CANVAS_WIDTH = 300;
-    const CANVAS_HEIGHT = 300;
+    const CANVAS_WIDTH = 510;
+    const CANVAS_HEIGHT = 510;
 
     const init = (canvasElement) => {
         canvas = canvasElement;

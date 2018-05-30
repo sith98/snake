@@ -53,7 +53,10 @@ const makeGameState = ({canvas, ctx, startState}) => {
     }
 
     const endGame = () => {
-        startState(makeGameOverState, {score: counter.value})
+        startState(makeGameOverState, {
+            score: counter.value,
+            background: ctx.getImageData(0, 0, canvas.width, canvas.height)
+        })
     }
 
 
