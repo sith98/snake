@@ -6,9 +6,12 @@ const game = (function () {
     let apple;
     let counter;
     
-    const WIDTH= 300;
-    const HEIGHT= 300;
-    const GRID_SIZE= 10;
+    const WIDTH = 30;
+    const HEIGHT = 30;
+    const GRID_SIZE = 10;
+    
+    
+    let gameOver = false;
     
     /* Variables and constants to control framerate */
     const FPS = 10; /* change this to change framerate in the game */
@@ -27,14 +30,19 @@ const game = (function () {
             update();
             draw();
         }
-        requestAnimationFrame(loop);
-	}
+        if (!gameOver) {
+            requestAnimationFrame(loop);
+        }
+    }
     
     const update = () => {
-        snake.update(apple, newApple)
+        snake.update(apple, WIDTH, HEIGHT, onAppleEaten, onSnakeDead)
     }
     const draw = () => {
-        ctx.clearRect(0, 0, Dimensions.WIDTH, Dimensions.HEIGHT);
+        if (gameOver) {
+            return;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         snake.draw(ctx, GRID_SIZE);
         apple.draw(ctx, GRID_SIZE);
     }
@@ -43,26 +51,44 @@ const game = (function () {
         snake.onKeyDown(evt)
     }
     
+    const onAppleEaten = () => {
+        newApple()
+    }
+    
+    const onSnakeDead = () => {
+        console.log("game over")
+        endGame()
+    }
+    
+    
     const newApple = () => {
         apple = makeApple(
-            Math.floor(WIDTH / GRID_SIZE),
-            Math.floor(HEIGHT / GRID_SIZE)
+            Math.floor(WIDTH),
+            Math.floor(HEIGHT)
         )
     }
     
     const startGame = () => {
-        const centerX = Math.floor(WIDTH / GRID_SIZE / 2)
-        const centerY = Math.floor(HEIGHT / GRID_SIZE / 2)
+        gameOver = false;
+        
+        const centerX = Math.floor(WIDTH / 2)
+        const centerY = Math.floor(HEIGHT / 2)
         
         snake = makeSnake(centerX, centerY);
         newApple()
         
         requestAnimationFrame(loop);
     }
+    
+    const endGame = () => {
+        gameOver = true;
+    }
 
-	const init = (canvas) => {
-        canvas.width = WIDTH;
-		canvas.height = HEIGHT;
+	const init = (canvasElement) => {
+        canvas = canvasElement;
+        
+        canvas.width = WIDTH * GRID_SIZE;
+		canvas.height = HEIGHT * GRID_SIZE;
         
         ctx = canvas.getContext("2d");
         

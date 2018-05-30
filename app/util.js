@@ -1,4 +1,8 @@
-const makePoint = (x, y) => ({x, y})
+const makePoint = (x, y) => Object.freeze({
+    x,
+    y,
+    equals: (other) => x === other.x && y === other.y
+})
 
 const drawPoint = ({ctx, gridSize, point, color}) => {
     ctx.fillStyle = color;

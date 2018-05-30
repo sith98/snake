@@ -5,7 +5,7 @@ const makeApple = (maxX, maxY) => {
     );
     
     return {
-        equals: ({x, y}) => x === point.x && y === point.y,
+        equals: (other) => point.equals(other),
         draw: (ctx, gridSize) => {
             drawPoint({ctx, gridSize, point, color: "red"})
         }

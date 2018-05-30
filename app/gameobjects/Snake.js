@@ -26,31 +26,46 @@ const makeSnake = (startX, startY, startDir = Dir.RIGHT, startLength = 3) => {
             dir = lastDir;
         }
             
-        const {x, y} = snake[snake.length - 1];
+        const {x, y} = getHead();
         switch (dir) {
             case Dir.UP:
-                return snake.push(makePoint(x, y - 1))
+                return snake.unshift(makePoint(x, y - 1))
             case Dir.DOWN:
-                return snake.push(makePoint(x, y + 1))
+                return snake.unshift(makePoint(x, y + 1))
             case Dir.LEFT:
-                return snake.push(makePoint(x - 1, y))
+                return snake.unshift(makePoint(x - 1, y))
             case Dir.RIGHT:
-                return snake.push(makePoint(x + 1, y))
+                return snake.unshift(makePoint(x + 1, y))
         }
     }
     
+    const getHead = () => snake[0];
+    
     const removeTail = () => {
-        snake.shift();
+        snake.pop();
     }
     
     // PUBLIC
-    const update = (apple, onAppleEaten) => {
+    const update = (apple, boardWidth, boardHeight, onAppleEaten, onSnakeDead) => {
         addHead()
         
-        const head = snake[snake.length - 1];
-        const coor = apple.getPoint()
+        const head = getHead();
         
-        if (head.x === coor.x && head.y === coor.y) {
+        // Game over
+        
+        const outOfBounds = (
+            head.x < 0 || head.y < 0 ||
+            head.x >= boardWidth || head.y >= boardHeight
+        );
+        const collidedWithItself = snake.slice(1)
+            .some(head.equals);
+        
+        if (outOfBounds || collidedWithItself) {
+            onSnakeDead()
+        }
+        
+        // Apple        
+        if (apple.equals(head)) {
             onAppleEaten()
         } else {
             removeTail()
