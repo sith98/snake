@@ -1,10 +1,10 @@
-/* The snake in the game */
 const Dir = Object.freeze({
     UP: 38, DOWN: 40, LEFT: 37, RIGHT: 39
 })
 
 const makeSnake = (startX, startY, startDir = Dir.RIGHT, startLength = 3) => {
-    // PRIVATE
+    // Initialization
+
     let dir = startDir;
     let lastDir = dir;
     
@@ -16,6 +16,8 @@ const makeSnake = (startX, startY, startDir = Dir.RIGHT, startLength = 3) => {
         }
     }
     
+    // Game logic
+
     const addHead = () => {
         if (
             lastDir === Dir.DOWN && dir !== Dir.UP ||
@@ -44,8 +46,7 @@ const makeSnake = (startX, startY, startDir = Dir.RIGHT, startLength = 3) => {
     const removeTail = () => {
         snake.pop();
     }
-    
-    // PUBLIC
+
     const update = (apple, boardWidth, boardHeight, onAppleEaten, onSnakeDead) => {
         addHead()
         
@@ -73,6 +74,8 @@ const makeSnake = (startX, startY, startDir = Dir.RIGHT, startLength = 3) => {
         
     }
     
+    // Drawing
+
     const startColor = {
         red: 50,
         green: 255,
@@ -83,23 +86,31 @@ const makeSnake = (startX, startY, startDir = Dir.RIGHT, startLength = 3) => {
         green: 100,
         blue: 0,
     }
-    
+
     const interpolate = (value, fromStart, fromEnd, toStart, toEnd) =>
         (value - fromStart) / (fromEnd - fromStart) * (toEnd - toStart) + toStart;
+    
+    const interpolateColor = (factor, color) =>
+        Math.floor(interpolate(factor, -1, 1, startColor[color], endColor[color]))
+    
+    
+
     const draw = ({ctx, gridSize}) => {
         for (const [index, point] of snake.entries()) {
-            const sine = -Math.cos(index * Math.PI / 5)
+            const factor = -Math.cos(index * Math.PI / 5)
 
-            const red = Math.floor(interpolate(sine, -1, 1, startColor.red, endColor.red))
-            const green = Math.floor(interpolate(sine, -1, 1, startColor.green, endColor.green))
-            const blue = Math.floor(interpolate(sine, -1, 1, startColor.blue, endColor.blue))
+            const red = interpolateColor(factor, "red");
+            const green = interpolateColor(factor, "green");
+            const blue = interpolateColor(factor, "blue");
 
             const color = `rgb(${red}, ${green}, ${blue}`;
 
             point.draw({ctx, gridSize, color});
         }
     }
-    
+
+
+    // Events
     const onKeyDown = ({keyCode}) => {
         lastDir = keyCode;
     }
