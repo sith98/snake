@@ -1,105 +1,62 @@
 const game = (function () {
 	let canvas;
-	let ctx;
+    let ctx;
 
-	let snake;
-    let appleDispatcher;
-    let counter;
-    
-    const WIDTH = 30;
-    const HEIGHT = 30;
-    const GRID_SIZE = 10;
-    
-    
-    let gameOver = false;
-    
-    /* Variables and constants to control framerate */
-    const FPS = 10; /* change this to change framerate in the game */
-    let now;
-    let then = Date.now();
-    const interval = 1000/FPS;
-    let delta;
+    let state;
 
-	// Draws the canvas
-	const loop = () => {
-        now = Date.now();
-        delta = now - then;
+    const CANVAS_WIDTH = 300;
+    const CANVAS_HEIGHT = 300;
+
+    const init = (canvasElement) => {
+        canvas = canvasElement;
         
-        if (delta > interval) {
-            then = now - (delta % interval);
-            update();
-        }
-        draw();
-        if (!gameOver) {
-            requestAnimationFrame(loop);
-        }
-    }
-    
-    const update = () => {
-        snake.update(appleDispatcher.apple, onAppleEaten, onSnakeDead)
-    }
-    const draw = () => {
-        if (gameOver) {
-            return;
-        }
+        canvas.width = CANVAS_WIDTH;
+		canvas.height = CANVAS_HEIGHT;
+        
+        ctx = canvas.getContext("2d");
+        document.body.addEventListener("keydown", onKeyDown)
+        
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const drawProps = {
-            canvas,
-            ctx,
-            gridSize: GRID_SIZE
-        }
-
-        snake.draw(drawProps);
-        appleDispatcher.apple.draw(drawProps);
-        counter.draw(drawProps);
+        startGame();
     }
     
-    const onKeyDown = (evt) => {
-        snake.onKeyDown(evt)
-    }
-    
-    const onAppleEaten = () => {
-        counter.inc();
-        appleDispatcher.spawnApple(snake.getEmptyFields())
-    }
-    
-    const onSnakeDead = () => {
-        console.log("game over")
-        endGame()
-    }
     
     const startGame = () => {
-        gameOver = false;
-        
-        const centerX = Math.floor(WIDTH / 2)
-        const centerY = Math.floor(HEIGHT / 2)
-        
-        snake = makeSnake({gameWidth: WIDTH, gameHeight: HEIGHT});
-        counter = makeCounter();
+        startState(makeGameState)
+        requestAnimationFrame(loop);
+    }
 
-        appleDispatcher = makeAppleDispatcher()
-        appleDispatcher.spawnApple(snake.getEmptyFields())
-        
+    // starts a new state with some optional additional args
+    const startState = (stateMaker, args = {}) => {
+        // Game variables and functions the state should have access
+        const gameApi = Object.freeze({
+            canvas,
+            ctx,
+            startState,
+        })
+        state = stateMaker(gameApi, args)
+    }
+
+    
+	const loop = () => {
+        update();
+        draw();
         requestAnimationFrame(loop);
     }
     
-    const endGame = () => {
-        gameOver = true;
+    const update = () => {
+        state.update();
     }
 
-	const init = (canvasElement) => {
-        canvas = canvasElement;
-        
-        canvas.width = WIDTH * GRID_SIZE;
-		canvas.height = HEIGHT * GRID_SIZE;
-        
-        ctx = canvas.getContext("2d");
-        
-        document.body.addEventListener("keydown", onKeyDown)
-        
-        startGame();
-	}
+    const draw = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        state.draw();
+    }
+    
+    const onKeyDown = (evt) => {
+        state.onKeyDown(evt)
+    }
+
     
 	return {
 		init
