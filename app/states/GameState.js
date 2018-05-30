@@ -1,10 +1,10 @@
-const makeGameState = ({canvas, ctx, startState}) => {
+const makeGameState = ({canvas, ctx, startState, saveGame}) => {
     const WIDTH = 30;
     const HEIGHT = 30;
     const GRID_SIZE = Math.floor(Math.min(canvas.width, canvas.height) / WIDTH);
 
     let snake = makeSnake({gameWidth: WIDTH, gameHeight: HEIGHT});
-    let counter = makeCounter();
+    let counter = makeCounter({saveGame});
 
     let appleDispatcher = makeAppleDispatcher()
     appleDispatcher.spawnApple(snake.getEmptyFields())
@@ -55,7 +55,8 @@ const makeGameState = ({canvas, ctx, startState}) => {
     const endGame = () => {
         startState(makeGameOverState, {
             score: counter.value,
-            background: ctx.getImageData(0, 0, canvas.width, canvas.height)
+            background: ctx.getImageData(0, 0, canvas.width, canvas.height),
+            newHighscore: counter.newHighscore
         })
     }
 

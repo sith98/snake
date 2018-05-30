@@ -1,7 +1,19 @@
-const makeCounter = () => {
+const makeCounter = ({saveGame}) => {
     let value = 0;
+    let newHighscore = false;
 
-    const inc = () => value += 9;
+    if (saveGame.highscore === undefined) {
+        saveGame.highscore = 0;
+        newHighscore = true;
+    }
+
+    const inc = () => {
+        value += 9;
+        if (saveGame.highscore === undefined || value > saveGame.highscore) {
+            saveGame.highscore = value;
+            newHighscore = true;
+        }
+    }
     const draw = ({ctx, canvas, gridSize}) => {
         ctx.fillStyle = "white";
         ctx.font = `${gridSize * 2}px Arial`;
@@ -13,6 +25,7 @@ const makeCounter = () => {
     return {
         inc,
         draw,
-        get value() { return value }
+        get value() { return value; },
+        get newHighscore() { return newHighscore; }
     };
 }

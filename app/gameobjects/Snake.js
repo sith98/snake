@@ -87,7 +87,6 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
                 }
             }
         }
-        console.log(fields.length);
 
         return fields;
     }

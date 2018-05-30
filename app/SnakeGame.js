@@ -1,26 +1,27 @@
 const game = (function () {
-	let canvas;
+    let canvas;
     let ctx;
 
     let state;
+    let saveGame
 
-    const CANVAS_WIDTH = 510;
-    const CANVAS_HEIGHT = 510;
+    const CANVAS_SIZE = 510;
 
     const init = (canvasElement) => {
         canvas = canvasElement;
-        
-        canvas.width = CANVAS_WIDTH;
-		canvas.height = CANVAS_HEIGHT;
-        
-        ctx = canvas.getContext("2d");
-        document.body.addEventListener("keydown", onKeyDown)
-        
 
+        canvas.width = CANVAS_SIZE;
+        canvas.height = CANVAS_SIZE;
+
+        ctx = canvas.getContext("2d");
+        
+        saveGame = makeSaveGame();
+        
+        document.body.addEventListener("keydown", onKeyDown)
         startGame();
     }
-    
-    
+
+
     const startGame = () => {
         startState(makeGameState)
         requestAnimationFrame(loop);
@@ -32,18 +33,26 @@ const game = (function () {
         const gameApi = Object.freeze({
             canvas,
             ctx,
+            saveGame,
             startState,
         })
-        state = stateMaker(gameApi, args)
+
+        // Provide default implementations for where a state does not implement
+        // all expected methods.
+        state = Object.assign({
+            update: () => {},
+            draw: () => {},
+            onKeyDown: () => {},
+        }, stateMaker(gameApi, args))
     }
 
-    
-	const loop = () => {
+
+    const loop = () => {
         update();
         draw();
         requestAnimationFrame(loop);
     }
-    
+
     const update = () => {
         state.update();
     }
@@ -52,13 +61,13 @@ const game = (function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         state.draw();
     }
-    
+
     const onKeyDown = (evt) => {
         state.onKeyDown(evt)
     }
 
-    
-	return {
-		init
-	};
+
+    return {
+        init
+    };
 })();
