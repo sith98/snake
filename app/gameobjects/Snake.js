@@ -73,9 +73,30 @@ const makeSnake = (startX, startY, startDir = Dir.RIGHT, startLength = 3) => {
         
     }
     
-    const draw = (ctx, gridSize) => {
-        for (const point of snake) {
-            drawPoint({ctx, gridSize, point, color: "green"})
+    const startColor = {
+        red: 50,
+        green: 255,
+        blue: 50
+    }
+    const endColor = {
+        red: 0,
+        green: 100,
+        blue: 0,
+    }
+    
+    const interpolate = (value, fromStart, fromEnd, toStart, toEnd) =>
+        (value - fromStart) / (fromEnd - fromStart) * (toEnd - toStart) + toStart;
+    const draw = ({ctx, gridSize}) => {
+        for (const [index, point] of snake.entries()) {
+            const sine = -Math.cos(index * Math.PI / 5)
+
+            const red = Math.floor(interpolate(sine, -1, 1, startColor.red, endColor.red))
+            const green = Math.floor(interpolate(sine, -1, 1, startColor.green, endColor.green))
+            const blue = Math.floor(interpolate(sine, -1, 1, startColor.blue, endColor.blue))
+
+            const color = `rgb(${red}, ${green}, ${blue}`;
+
+            point.draw({ctx, gridSize, color});
         }
     }
     

@@ -6,8 +6,9 @@ const makeApple = (maxX, maxY) => {
     
     return {
         equals: (other) => point.equals(other),
-        draw: (ctx, gridSize) => {
-            drawPoint({ctx, gridSize, point, color: "red"})
+        draw: ({ctx, gridSize}) => {
+            const radius = gridSize * (0.4 + Math.sin(Date.now() / 150) * 0.1)
+            point.drawAsCircle({ctx, gridSize, radius, color: "red"})
         }
     }
 }

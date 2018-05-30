@@ -42,9 +42,17 @@ const game = (function () {
         if (gameOver) {
             return;
         }
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        snake.draw(ctx, GRID_SIZE);
-        apple.draw(ctx, GRID_SIZE);
+        const drawProps = {
+            canvas,
+            ctx,
+            gridSize: GRID_SIZE
+        }
+
+        snake.draw(drawProps);
+        apple.draw(drawProps);
+        counter.draw(drawProps);
     }
     
     const onKeyDown = (evt) => {
@@ -52,6 +60,7 @@ const game = (function () {
     }
     
     const onAppleEaten = () => {
+        counter.inc();
         newApple()
     }
     
@@ -75,6 +84,7 @@ const game = (function () {
         const centerY = Math.floor(HEIGHT / 2)
         
         snake = makeSnake(centerX, centerY);
+        counter = makeCounter();
         newApple()
         
         requestAnimationFrame(loop);
