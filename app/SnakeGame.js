@@ -3,7 +3,7 @@ const game = (function () {
 	let ctx;
 
 	let snake;
-    let apple;
+    let appleDispatcher;
     let counter;
     
     const WIDTH = 30;
@@ -28,15 +28,15 @@ const game = (function () {
         if (delta > interval) {
             then = now - (delta % interval);
             update();
-            draw();
         }
+        draw();
         if (!gameOver) {
             requestAnimationFrame(loop);
         }
     }
     
     const update = () => {
-        snake.update(apple, WIDTH, HEIGHT, onAppleEaten, onSnakeDead)
+        snake.update(appleDispatcher.apple, onAppleEaten, onSnakeDead)
     }
     const draw = () => {
         if (gameOver) {
@@ -51,7 +51,7 @@ const game = (function () {
         }
 
         snake.draw(drawProps);
-        apple.draw(drawProps);
+        appleDispatcher.apple.draw(drawProps);
         counter.draw(drawProps);
     }
     
@@ -61,20 +61,12 @@ const game = (function () {
     
     const onAppleEaten = () => {
         counter.inc();
-        newApple()
+        appleDispatcher.spawnApple(snake.getEmptyFields())
     }
     
     const onSnakeDead = () => {
         console.log("game over")
         endGame()
-    }
-    
-    
-    const newApple = () => {
-        apple = makeApple(
-            Math.floor(WIDTH),
-            Math.floor(HEIGHT)
-        )
     }
     
     const startGame = () => {
@@ -83,9 +75,11 @@ const game = (function () {
         const centerX = Math.floor(WIDTH / 2)
         const centerY = Math.floor(HEIGHT / 2)
         
-        snake = makeSnake(centerX, centerY);
+        snake = makeSnake({gameWidth: WIDTH, gameHeight: HEIGHT});
         counter = makeCounter();
-        newApple()
+
+        appleDispatcher = makeAppleDispatcher()
+        appleDispatcher.spawnApple(snake.getEmptyFields())
         
         requestAnimationFrame(loop);
     }

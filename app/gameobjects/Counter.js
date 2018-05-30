@@ -1,7 +1,7 @@
 const makeCounter = () => {
     let counter = 0;
 
-    const inc = () => counter += 1;
+    const inc = () => counter += 9;
     const draw = ({ctx, canvas, gridSize}) => {
         ctx.fillStyle = "white";
         ctx.font = `${gridSize * 2}px Arial`;

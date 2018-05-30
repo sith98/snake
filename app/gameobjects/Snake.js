@@ -2,8 +2,11 @@ const Dir = Object.freeze({
     UP: 38, DOWN: 40, LEFT: 37, RIGHT: 39
 })
 
-const makeSnake = (startX, startY, startDir = Dir.RIGHT, startLength = 3) => {
+const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3}) => {
     // Initialization
+
+    const startX = Math.floor(gameWidth / 2)
+    const startY = Math.floor(gameHeight / 2)
 
     let dir = startDir;
     let lastDir = dir;
@@ -47,8 +50,8 @@ const makeSnake = (startX, startY, startDir = Dir.RIGHT, startLength = 3) => {
         snake.pop();
     }
 
-    const update = (apple, boardWidth, boardHeight, onAppleEaten, onSnakeDead) => {
-        addHead()
+    const update = (apple, onAppleEaten, onSnakeDead) => {
+        addHead();
         
         const head = getHead();
         
@@ -56,22 +59,37 @@ const makeSnake = (startX, startY, startDir = Dir.RIGHT, startLength = 3) => {
         
         const outOfBounds = (
             head.x < 0 || head.y < 0 ||
-            head.x >= boardWidth || head.y >= boardHeight
+            head.x >= gameWidth || head.y >= gameHeight
         );
         const collidedWithItself = snake.slice(1)
             .some(head.equals);
         
         if (outOfBounds || collidedWithItself) {
-            onSnakeDead()
+            onSnakeDead();
         }
         
         // Apple        
         if (apple.equals(head)) {
-            onAppleEaten()
+            onAppleEaten();
         } else {
-            removeTail()
+            removeTail();
         }
         
+    }
+
+    const getEmptyFields = () => {
+        const fields = [];
+        for (let x = 0; x < gameWidth; x++) {
+            for (let y = 0; y < gameHeight; y++) {
+                const field = makePoint(x, y)
+                if (!snake.some(field.equals)) {
+                    fields.push(field);
+                }
+            }
+        }
+        console.log(fields.length);
+
+        return fields;
     }
     
     // Drawing
@@ -117,9 +135,10 @@ const makeSnake = (startX, startY, startDir = Dir.RIGHT, startLength = 3) => {
     
     init()
     
-    return {
+    return Object.freeze({
         draw,
         update,
+        getEmptyFields,
         onKeyDown
-    }
+    })
 }
