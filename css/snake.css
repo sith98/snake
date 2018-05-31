@@ -13,3 +13,7 @@ body {
 	color: white;
 	font-family: 'Roboto Condensed Light';
 }
+
+h1, p {
+	text-align: center;
+}

@@ -1,4 +1,4 @@
-const makeMainMenuState = ({canvas, ctx, startState}) => {
+const makeMainMenuState = ({canvasSize, ctx, startState}) => {
     const startTimer = Date.now()
 
 
@@ -12,7 +12,7 @@ const makeMainMenuState = ({canvas, ctx, startState}) => {
     }
 
 
-    const centerX = canvas.width / 2;
+    const centerX = canvasSize / 2;
 
 
     const texts = {
@@ -20,22 +20,22 @@ const makeMainMenuState = ({canvas, ctx, startState}) => {
             text: "Snake",
             start: 100,
             end: 700,
-            size: canvas.width / 7,
-            y: canvas.height * 0.4,
+            size: canvasSize / 7,
+            y: canvasSize * 0.4,
         },
         text2: {
             text: "By Simon Thelen",
             start: 600,
             end: 1200,
-            size: canvas.width / 20,
-            y: canvas.height * 0.5,
+            size: canvasSize / 20,
+            y: canvasSize * 0.5,
         },
         text3: {
             text: "Press SPACE to start playing",
             start: 1100,
             end: 1700,
-            size: canvas.width / 17,
-            y: canvas.height * 0.6,
+            size: canvasSize / 17,
+            y: canvasSize * 0.6,
         },
     }
 

@@ -1,7 +1,7 @@
-const makeGameState = ({canvas, ctx, startState, saveGame}) => {
+const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
     const WIDTH = 30;
     const HEIGHT = 30;
-    const GRID_SIZE = Math.floor(Math.min(canvas.width, canvas.height) / WIDTH);
+    const GRID_SIZE = Math.floor(Math.min(canvasSize, canvasSize) / WIDTH);
 
     let snake = makeSnake({gameWidth: WIDTH, gameHeight: HEIGHT});
     let counter = makeCounter({saveGame});
@@ -29,7 +29,7 @@ const makeGameState = ({canvas, ctx, startState, saveGame}) => {
 
     const draw = () => {
         const drawProps = {
-            canvas,
+            canvasSize,
             ctx,
             gridSize: GRID_SIZE
         }
@@ -55,7 +55,7 @@ const makeGameState = ({canvas, ctx, startState, saveGame}) => {
     const endGame = () => {
         startState(makeGameOverState, {
             score: counter.value,
-            background: ctx.getImageData(0, 0, canvas.width, canvas.height),
+            background: ctx.getImageData(0, 0, canvasSize, canvasSize),
             newHighscore: counter.newHighscore
         })
     }

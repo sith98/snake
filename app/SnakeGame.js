@@ -31,13 +31,13 @@ const game = (function () {
     const startState = (stateMaker, args = {}) => {
         // Game variables and functions the state should have access
         const gameApi = Object.freeze({
-            canvas,
+            canvasSize: CANVAS_SIZE,
             ctx,
             saveGame,
             startState,
         })
 
-        // Provide default implementations for where a state does not implement
+        // Provide default implementations in case a state does not implement
         // all expected methods.
         state = Object.assign({
             update: () => {},
@@ -58,7 +58,7 @@ const game = (function () {
     }
 
     const draw = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
         state.draw();
     }
 

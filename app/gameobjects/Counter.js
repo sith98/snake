@@ -14,12 +14,12 @@ const makeCounter = ({saveGame}) => {
             newHighscore = true;
         }
     }
-    const draw = ({ctx, canvas, gridSize}) => {
+    const draw = ({ctx, canvasSize, gridSize}) => {
         ctx.fillStyle = "white";
         ctx.font = `${gridSize * 2}px Arial`;
         ctx.textAlign = "center";
         ctx.baseLine = "bottom";
-        ctx.fillText(value, canvas.width / 2, gridSize * 3);
+        ctx.fillText(value, canvasSize / 2, gridSize * 3);
     };
 
     return {
