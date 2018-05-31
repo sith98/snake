@@ -78,11 +78,15 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
     }
 
     const getEmptyFields = () => {
+        const snakeLookUp = new Array(gameWidth * gameHeight);
+        for (const {x, y} of snake) {
+            snakeLookUp[x + y * gameWidth] = true;
+        }
         const fields = [];
         for (let x = 0; x < gameWidth; x++) {
             for (let y = 0; y < gameHeight; y++) {
-                const field = makePoint(x, y)
-                if (!snake.some(field.equals)) {
+                if (snakeLookUp[x + y * gameHeight] === true) {
+                    const field = makePoint(x, y);
                     fields.push(field);
                 }
             }
