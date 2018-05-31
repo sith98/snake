@@ -2,6 +2,7 @@
 // to a different range (toStart to toEnd)
 // Gets used for calculating Snake colors
 // and Main Menu animations
+
 const interpolate = (value, fromStart, fromEnd, toStart, toEnd) =>
     (value - fromStart) / (fromEnd - fromStart) * (toEnd - toStart) + toStart
 

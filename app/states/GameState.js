@@ -1,16 +1,24 @@
 const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
+    // Number of columns
     const WIDTH = 30;
+    // Number of rows
     const HEIGHT = 30;
-    const GRID_SIZE = Math.floor(Math.min(canvasSize, canvasSize) / WIDTH);
+    const GRID_SIZE = Math.floor(canvasSize / WIDTH);
 
     let snake;
     let counter;
     let appleDispatcher;
 
     const init = () => {
+        // the snake needs to know the number of rows and columns
         snake = makeSnake({gameWidth: WIDTH, gameHeight: HEIGHT});
+        // the counter can get and set the current highscore
         counter = makeCounter({saveGame});
-    
+        
+        // the apple dispatcher cannot spawn an apple itself
+        // because it needs to know what fields are empty
+        // therefore the dispatcher receives a reference to the state's
+        // spawn apple function it can call instead
         appleDispatcher = makeAppleDispatcher({gameSpawnApple: spawnApple})
         appleDispatcher.init();
         setFps(NORMAL_FPS);
@@ -23,6 +31,8 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
 
     let fps;
     let interval;
+    // if fpsTimer is 0, the state automatically goes back to normal speed
+    // is needed for powerups "Faster" and "Slower"
     let fpsTimer;
     const setFps = (newFps, timer = 0) => {
         fps = newFps;
@@ -42,28 +52,36 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
     }
 
     const internalUpdate = () => {
-        console.log(fps);
+        // Resets fps to normal when timer has reached zero
         if (fpsTimer === 0) {
             setFps(NORMAL_FPS);
         } else {
             fpsTimer -= 1;
         }
+        // snake needs a reference to an array of all present apples
+        // for collision detection
+        // It also receives callbacks to let the state know when it has
+        // eaten an apple or has died
         snake.update(appleDispatcher.apples, onAppleEaten, onSnakeDead);
         appleDispatcher.update();
     }
 
     const draw = () => {
-        const drawProps = {
+        // information the game objects need to render properly
+        const drawProps = Object.freeze({
             canvasSize,
             ctx,
             gridSize: GRID_SIZE
-        }
+        })
 
         snake.draw(drawProps);
         appleDispatcher.draw(drawProps);
         counter.draw(drawProps);
     }
 
+    // gets called by apple dispatcher
+    // it asks the snake for all empty fields and then in turn
+    // calls the apple dispatcher's internal spawnApple method
     const spawnApple = (type) => {
         appleDispatcher.spawnApple(snake.getEmptyFields(), type);
     }
@@ -72,6 +90,9 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
         snake.onKeyDown(evt)
     }
 
+    // lets other game objects know if an apple was being eaten
+    // and also deals with the powerups which influence the state
+    // directly instead of the snake
     const onAppleEaten = (apple) => {
         snake.onAppleEaten(apple);
         counter.onAppleEaten(apple);
@@ -91,6 +112,10 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
         endGame()
     }
 
+    // starts Game Over State and passes
+    // - the current score,
+    // - if the score has been a new highscore,
+    // - and a "screenshot" of the current game situation
     const endGame = () => {
         startState(makeGameOverState, {
             score: counter.value,

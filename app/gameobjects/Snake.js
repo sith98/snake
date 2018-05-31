@@ -9,12 +9,22 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
     const startY = Math.floor(gameHeight / 2)
 
     let dir = startDir;
+    
+    // gets set in the keydown handler
+    // the actual direction only gets updated in the update function
+    // this way in can be ensured the snake will not go the opposite way
+    // if the player sets the direction twice in one frame
+    // (e.g. from LEFT to UP and then RIGHT)
     let nextDir = dir;
     
     let snake = [makePoint(startX, startY)]
 
+    // gets set to a value higher than zero when an apple has been eaten
+    // the snake will get longer that many fields
+    // by not removing the tail for that many frames
     let tailIncrementer = 0;
     
+    // add fields until desired initial length is reached
     const init = () => {
         for (let i = 0; i < startLength - 1; i++) {
             addHead()
@@ -24,6 +34,7 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
     // Game logic
 
     const addHead = () => {
+        // the player is not allowed to go the oppsite way
         if (
             nextDir === Dir.DOWN && dir !== Dir.UP ||
             nextDir === Dir.UP && dir !== Dir.DOWN ||
@@ -32,17 +43,21 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
         ) {
             dir = nextDir;
         }
-            
+        
         const {x, y} = snake[0];
         switch (dir) {
             case Dir.UP:
-                return snake.unshift(makePoint(x, y - 1))
+                snake.unshift(makePoint(x, y - 1));
+                break;
             case Dir.DOWN:
-                return snake.unshift(makePoint(x, y + 1))
+                snake.unshift(makePoint(x, y + 1));
+                break;
             case Dir.LEFT:
-                return snake.unshift(makePoint(x - 1, y))
+                snake.unshift(makePoint(x - 1, y));
+                break;
             case Dir.RIGHT:
-                return snake.unshift(makePoint(x + 1, y))
+                snake.unshift(makePoint(x + 1, y));
+                break;
         }
     }
     
@@ -82,17 +97,21 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
         
     }
 
+    // returns an array of points that represent all fields the snake is not on
     const getEmptyFields = () => {
+        // by first storing all snake fields in a lookup table 
+        // checking if a fields is occupied by the snake can be done
+        // in constant time instead of linear time
         const snakeLookUp = new Array(gameWidth * gameHeight);
         for (const {x, y} of snake) {
             snakeLookUp[x + y * gameWidth] = true;
         }
+        
         const fields = [];
         for (let x = 0; x < gameWidth; x++) {
             for (let y = 0; y < gameHeight; y++) {
-                if (snakeLookUp[x + y * gameHeight] !== true) {
-                    const field = makePoint(x, y);
-                    fields.push(field);
+                if (snakeLookUp[x + y * gameWidth] !== true) {
+                    fields.push(makePoint(x, y));
                 }
             }
         }
@@ -106,6 +125,7 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
         nextDir = keyCode;
     }
 
+    // handles the effects of different apples on the snake
     const onAppleEaten = (apple) => {
         switch (apple.type) {
             case AppleType.NORMAL:
@@ -120,6 +140,7 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
         }
     }
 
+    // reverses the snake array and calculates the new look directino
     const reverseSnake = () => {
         snake.reverse();
         let [head, second] = snake;
@@ -137,6 +158,7 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
     
     // Drawing
 
+    // the two ends of the snake's color range
     const startColor = {
         red: 50,
         green: 255,
@@ -148,9 +170,13 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
         blue: 0,
     }
     
+    // does an interpolation of cosine values (between -1 and 1)
+    // to a color value determined by "startColor" and "endColor"
     const interpolateColor = (factor, color) =>
-        Math.floor(interpolate(factor, -1, 1, startColor[color], endColor[color]))    
+        Math.floor(interpolate(factor, -1, 1, startColor[color], endColor[color]));  
 
+    // the snake's color pattern is calculated by putting each index
+    // through the cosine function    
     const draw = ({ctx, gridSize}) => {
         for (const [index, point] of snake.entries()) {
             const factor = -Math.cos(index * Math.PI / 5)
@@ -161,7 +187,8 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
 
             const color = `rgb(${red}, ${green}, ${blue}`;
 
-            point.draw({ctx, gridSize, color});
+            ctx.fillStyle = color;
+            ctx.fillRect(point.x * gridSize, point.y * gridSize, gridSize, gridSize);
         }
     }
 

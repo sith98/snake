@@ -1,4 +1,5 @@
 const makeGameOverState = ({canvasSize, ctx, startState, saveGame}, {score, background, isNewHighscore}) => {
+    // the four font sizes
     const size1 = canvasSize / 10
     const size2 = canvasSize / 15
     const size3 = canvasSize / 13
@@ -21,7 +22,7 @@ const makeGameOverState = ({canvasSize, ctx, startState, saveGame}, {score, back
         ctx.font = size2 + "px Arial"
         ctx.fillText(`Your score was ${score}.`, centerY, canvasSize * 0.45)
 
-        
+        // Animation if this has been a new highscore
         if (isNewHighscore) {
             const fontSize = size3 * (1 + 0.2 * Math.sin(Date.now() * 0.004));
             ctx.font = fontSize + "px Arial";
@@ -35,6 +36,7 @@ const makeGameOverState = ({canvasSize, ctx, startState, saveGame}, {score, back
         ctx.fillText("Press ESC to play again.", centerY, canvasSize * 0.65)
     }
 
+    // Starts a new game when the player hits the Escape key
     const ESC = 27;
     const onKeyDown = (evt) => {
         if (evt.keyCode === ESC) {

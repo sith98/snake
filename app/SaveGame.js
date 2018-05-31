@@ -1,3 +1,4 @@
+// handles localStorage interaction
 const makeSaveGame = () => {
     const lsKey = "highscore";
 

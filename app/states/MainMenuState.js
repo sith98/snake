@@ -12,8 +12,9 @@ const makeMainMenuState = ({canvasSize, ctx, startState}) => {
     }
 
 
-    const centerX = canvasSize / 2;
+    // GRAPHICS
 
+    const centerX = canvasSize / 2;
 
     const texts = {
         text1: {
@@ -39,6 +40,7 @@ const makeMainMenuState = ({canvasSize, ctx, startState}) => {
         },
     }
 
+    // Calculates Alpha value for fade in animation
     const animationInterpolate = (value, textIndex) =>
         boundInterpolate(value, texts[textIndex].start, texts[textIndex].end, 0, 1)
 

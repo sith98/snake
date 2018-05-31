@@ -1,10 +1,14 @@
 const game = (function () {
     let canvas;
     let ctx;
-
+    
+    // Each state represents one seperate screen
+    // MainMenuState, GameState, GameOverState
     let state;
-    let saveGame
+    // Permenantly stores highscore
+    let saveGame;
 
+    // both width and height of the canvas
     const CANVAS_SIZE = 510;
 
     const init = (canvasElement) => {
@@ -29,7 +33,7 @@ const game = (function () {
 
     // starts a new state with some optional additional args
     const startState = (stateMaker, args = {}) => {
-        // Game variables and functions the state should have access
+        // Game variables and functions every state should have access to
         const gameApi = Object.freeze({
             canvasSize: CANVAS_SIZE,
             ctx,
@@ -37,7 +41,7 @@ const game = (function () {
             startState,
         })
 
-        // Provide default implementations in case a state does not implement
+        // Provides default implementations in case a state does not implement
         // all expected methods.
         state = Object.assign({
             update: () => {},

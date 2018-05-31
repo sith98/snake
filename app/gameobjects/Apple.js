@@ -1,3 +1,6 @@
+// an enum that represents the apple type
+// normal the default version
+// the rest are the four different power ups
 const AppleType = Object.freeze({
     NORMAL: 0,
     LONGER: 1,
@@ -6,12 +9,22 @@ const AppleType = Object.freeze({
     SLOWER: 4,
 })
 
+// Creates an apple that can be either a normal one
+// or a special apple depending on type
 const makeApple = (x, y, type = AppleType.NORMAL) => {
     const point = makePoint(x, y);
 
     const drawNormal = ({ctx, gridSize}) => {
         const radius = gridSize * (0.4 + Math.sin(Date.now() / 150) * 0.1)
-        point.drawAsCircle({ctx, gridSize, radius, color: "red"})
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(
+            (x + 0.5) * gridSize,
+            (y + 0.5) * gridSize,
+            radius,
+            0, 2 * Math.PI
+        );
+        ctx.fill();
     }
     
     const drawSpecial = ({ctx, gridSize}) => {
