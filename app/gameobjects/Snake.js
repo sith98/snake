@@ -85,7 +85,7 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
         const fields = [];
         for (let x = 0; x < gameWidth; x++) {
             for (let y = 0; y < gameHeight; y++) {
-                if (snakeLookUp[x + y * gameHeight] === true) {
+                if (snakeLookUp[x + y * gameHeight] !== true) {
                     const field = makePoint(x, y);
                     fields.push(field);
                 }
@@ -107,14 +107,9 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
         green: 100,
         blue: 0,
     }
-
-    const interpolate = (value, fromStart, fromEnd, toStart, toEnd) =>
-        (value - fromStart) / (fromEnd - fromStart) * (toEnd - toStart) + toStart;
     
     const interpolateColor = (factor, color) =>
-        Math.floor(interpolate(factor, -1, 1, startColor[color], endColor[color]))
-    
-    
+        Math.floor(interpolate(factor, -1, 1, startColor[color], endColor[color]))    
 
     const draw = ({ctx, gridSize}) => {
         for (const [index, point] of snake.entries()) {

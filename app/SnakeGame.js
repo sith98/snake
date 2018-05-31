@@ -23,7 +23,7 @@ const game = (function () {
 
 
     const startGame = () => {
-        startState(makeGameState)
+        startState(makeMainMenuState)
         requestAnimationFrame(loop);
     }
 
