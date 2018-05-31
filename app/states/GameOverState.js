@@ -1,4 +1,4 @@
-const makeGameOverState = ({canvasSize, ctx, startState, saveGame}, {score, background, newHighscore}) => {
+const makeGameOverState = ({canvasSize, ctx, startState, saveGame}, {score, background, isNewHighscore}) => {
     const size1 = canvasSize / 10
     const size2 = canvasSize / 15
     const size3 = canvasSize / 13
@@ -22,7 +22,7 @@ const makeGameOverState = ({canvasSize, ctx, startState, saveGame}, {score, back
         ctx.fillText(`Your score was ${score}.`, centerY, canvasSize * 0.45)
 
         
-        if (newHighscore) {
+        if (isNewHighscore) {
             const fontSize = size3 * (1 + 0.2 * Math.sin(Date.now() * 0.004));
             ctx.font = fontSize + "px Arial";
             ctx.fillText("New Highscore!", centerY, canvasSize * 0.55)

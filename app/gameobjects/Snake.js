@@ -12,6 +12,8 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
     let lastDir = dir;
     
     let snake = [makePoint(startX, startY)]
+
+    let tailIncrementer = 0;
     
     const init = () => {
         for (let i = 0; i < startLength - 1; i++) {
@@ -31,7 +33,7 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
             dir = lastDir;
         }
             
-        const {x, y} = getHead();
+        const {x, y} = snake[0];
         switch (dir) {
             case Dir.UP:
                 return snake.unshift(makePoint(x, y - 1))
@@ -44,16 +46,14 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
         }
     }
     
-    const getHead = () => snake[0];
-    
     const removeTail = () => {
         snake.pop();
     }
 
-    const update = (apple, onAppleEaten, onSnakeDead) => {
+    const update = (apples, gameOnAppleEaten, onSnakeDead) => {
         addHead();
         
-        const head = getHead();
+        const [head, ...rest] = snake;
         
         // Game over
         
@@ -61,18 +61,23 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
             head.x < 0 || head.y < 0 ||
             head.x >= gameWidth || head.y >= gameHeight
         );
-        const collidedWithItself = snake.slice(1)
-            .some(head.equals);
+        const collidedWithItself = rest.some(head.equals);
         
         if (outOfBounds || collidedWithItself) {
             onSnakeDead();
         }
         
-        // Apple        
-        if (apple.equals(head)) {
-            onAppleEaten();
-        } else {
+        // Apple
+        for (const apple of apples) {
+            if (apple.pointEquals(head)) {
+                gameOnAppleEaten(apple);
+            }
+        }
+
+        if (tailIncrementer === 0) {
             removeTail();
+        } else {
+            tailIncrementer -= 1;
         }
         
     }
@@ -93,6 +98,22 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
         }
 
         return fields;
+    }
+
+
+    // Events
+    const onKeyDown = ({keyCode}) => {
+        lastDir = keyCode;
+    }
+
+    const onAppleEaten = (apple) => {
+        switch (apple.type) {
+            case AppleType.NORMAL:
+                tailIncrementer = 1;
+                return;
+            case AppleType.LONGER:
+                tailIncrementer = 5;
+        }
     }
     
     // Drawing
@@ -125,11 +146,6 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
         }
     }
 
-
-    // Events
-    const onKeyDown = ({keyCode}) => {
-        lastDir = keyCode;
-    }
     
     init()
     
@@ -137,6 +153,7 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
         draw,
         update,
         getEmptyFields,
-        onKeyDown
+        onKeyDown,
+        onAppleEaten,
     })
 }

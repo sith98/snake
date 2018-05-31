@@ -24,7 +24,7 @@ const makeMainMenuState = ({canvasSize, ctx, startState}) => {
             y: canvasSize * 0.4,
         },
         text2: {
-            text: "By Simon Thelen",
+            text: "by Simon Thelen",
             start: 600,
             end: 1200,
             size: canvasSize / 20,

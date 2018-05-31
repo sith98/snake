@@ -3,11 +3,17 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
     const HEIGHT = 30;
     const GRID_SIZE = Math.floor(Math.min(canvasSize, canvasSize) / WIDTH);
 
-    let snake = makeSnake({gameWidth: WIDTH, gameHeight: HEIGHT});
-    let counter = makeCounter({saveGame});
+    let snake;
+    let counter;
+    let appleDispatcher;
 
-    let appleDispatcher = makeAppleDispatcher()
-    appleDispatcher.spawnApple(snake.getEmptyFields())
+    const init = () => {
+        snake = makeSnake({gameWidth: WIDTH, gameHeight: HEIGHT});
+        counter = makeCounter({saveGame});
+    
+        appleDispatcher = makeAppleDispatcher({gameSpawnApple: spawnApple})
+        appleDispatcher.init()
+    }    
 
     const FPS = 10;
     const interval = 1000 / FPS;
@@ -24,7 +30,8 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
     }
 
     const internalUpdate = () => {
-        snake.update(appleDispatcher.apple, onAppleEaten, onSnakeDead)
+        snake.update(appleDispatcher.apples, onAppleEaten, onSnakeDead);
+        appleDispatcher.update();
     }
 
     const draw = () => {
@@ -35,17 +42,22 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
         }
 
         snake.draw(drawProps);
-        appleDispatcher.apple.draw(drawProps);
+        appleDispatcher.draw(drawProps);
         counter.draw(drawProps);
+    }
+
+    const spawnApple = (type) => {
+        appleDispatcher.spawnApple(snake.getEmptyFields(), type);
     }
     
     const onKeyDown = (evt) => {
         snake.onKeyDown(evt)
     }
 
-    const onAppleEaten = () => {
-        counter.inc();
-        appleDispatcher.spawnApple(snake.getEmptyFields())
+    const onAppleEaten = (apple) => {
+        snake.onAppleEaten(apple);
+        counter.onAppleEaten(apple);
+        appleDispatcher.onAppleEaten(apple)
     }
     
     const onSnakeDead = () => {
@@ -56,11 +68,11 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
         startState(makeGameOverState, {
             score: counter.value,
             background: ctx.getImageData(0, 0, canvasSize, canvasSize),
-            newHighscore: counter.newHighscore
+            isNewHighscore: counter.isNewHighscore
         })
     }
 
-
+    init();
     return Object.freeze({
         update,
         draw,
