@@ -1,6 +1,9 @@
 const AppleType = Object.freeze({
     NORMAL: 0,
     LONGER: 1,
+    REVERSE: 2,
+    FASTER: 3,
+    SLOWER: 4,
 })
 
 const makeApple = (x, y, type = AppleType.NORMAL) => {

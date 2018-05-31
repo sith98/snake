@@ -12,13 +12,25 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
         counter = makeCounter({saveGame});
     
         appleDispatcher = makeAppleDispatcher({gameSpawnApple: spawnApple})
-        appleDispatcher.init()
+        appleDispatcher.init();
+        setFps(NORMAL_FPS);
     }    
 
-    const FPS = 10;
-    const interval = 1000 / FPS;
-    let then = Date.now();
+    const NORMAL_FPS = 10;
+    const FAST_FPS = 20;
+    const SLOW_FPS = 5;
+    
 
+    let fps;
+    let interval;
+    let fpsTimer;
+    const setFps = (newFps, timer = 0) => {
+        fps = newFps;
+        interval = 1000 / fps;
+        fpsTimer = timer;
+    }
+
+    let then = Date.now();
     const update = () => {
         const now = Date.now();
         const delta = now - then;
@@ -30,6 +42,12 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
     }
 
     const internalUpdate = () => {
+        console.log(fps);
+        if (fpsTimer === 0) {
+            setFps(NORMAL_FPS);
+        } else {
+            fpsTimer -= 1;
+        }
         snake.update(appleDispatcher.apples, onAppleEaten, onSnakeDead);
         appleDispatcher.update();
     }
@@ -58,6 +76,15 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
         snake.onAppleEaten(apple);
         counter.onAppleEaten(apple);
         appleDispatcher.onAppleEaten(apple)
+        
+        switch (apple.type) {
+            case AppleType.FASTER:
+                setFps(FAST_FPS, 80);
+                break;
+            case AppleType.SLOWER:
+                setFps(SLOW_FPS, 40);
+                break;
+        }
     }
     
     const onSnakeDead = () => {

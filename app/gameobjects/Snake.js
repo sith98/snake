@@ -9,7 +9,7 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
     const startY = Math.floor(gameHeight / 2)
 
     let dir = startDir;
-    let lastDir = dir;
+    let nextDir = dir;
     
     let snake = [makePoint(startX, startY)]
 
@@ -25,12 +25,12 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
 
     const addHead = () => {
         if (
-            lastDir === Dir.DOWN && dir !== Dir.UP ||
-            lastDir === Dir.UP && dir !== Dir.DOWN ||
-            lastDir === Dir.LEFT && dir !== Dir.RIGHT ||
-            lastDir === Dir.RIGHT && dir !== Dir.LEFT
+            nextDir === Dir.DOWN && dir !== Dir.UP ||
+            nextDir === Dir.UP && dir !== Dir.DOWN ||
+            nextDir === Dir.LEFT && dir !== Dir.RIGHT ||
+            nextDir === Dir.RIGHT && dir !== Dir.LEFT
         ) {
-            dir = lastDir;
+            dir = nextDir;
         }
             
         const {x, y} = snake[0];
@@ -103,17 +103,36 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
 
     // Events
     const onKeyDown = ({keyCode}) => {
-        lastDir = keyCode;
+        nextDir = keyCode;
     }
 
     const onAppleEaten = (apple) => {
         switch (apple.type) {
             case AppleType.NORMAL:
                 tailIncrementer = 1;
-                return;
+                break;
             case AppleType.LONGER:
                 tailIncrementer = 5;
+                break;
+            case AppleType.REVERSE:
+                tailIncrementer = 1;
+                reverseSnake();
         }
+    }
+
+    const reverseSnake = () => {
+        snake.reverse();
+        let [head, second] = snake;
+        if (head.x < second.x) {
+            dir = Dir.LEFT;
+        } else if (head.x > second.x) {
+            dir = Dir.RIGHT;
+        } else if (head.y < second.y) {
+            dir = Dir.UP;
+        } else if (head.y > second.y) {
+            dir = Dir.DOWN;
+        }
+        nextDir = dir;
     }
     
     // Drawing

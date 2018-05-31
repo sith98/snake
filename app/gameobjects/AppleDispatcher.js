@@ -2,6 +2,10 @@ const makeAppleDispatcher = ({gameSpawnApple}) => {
     let apple;
     let specialApple;
 
+    const DESPAWN_TIME = 50;
+    const SPAWN_TIME_MIN = 80;
+    const SPAWN_TIME_MAX = 120;
+
     let spawnCounter = 0;
     let despawnCounter = 0;
 
@@ -15,8 +19,8 @@ const makeAppleDispatcher = ({gameSpawnApple}) => {
             (apple === undefined || !apple.pointEquals(field)) &&
             (specialApple === undefined || !apple.pointEquals(field))
         )
-        const index = Math.floor(Math.random() * emptyFields.length)
-        const {x, y} = emptyFields[index]
+        const index = Math.floor(Math.random() * actualEmptyFields.length)
+        const {x, y} = actualEmptyFields[index]
         if (type === AppleType.NORMAL) {
             apple = makeApple(x, y, type);
         } else {
@@ -24,14 +28,18 @@ const makeAppleDispatcher = ({gameSpawnApple}) => {
         }
     }
     
+    const specialAppleTypes = [AppleType.LONGER, AppleType.REVERSE, AppleType.FASTER, AppleType.SLOWER]
     const scheduleSpecialAppleSpawn = () => {
         specialApple = undefined
         despawnCounter = 0;
-        spawnCounter = 80 + Math.floor(Math.random() * 40);
+        spawnCounter =
+            SPAWN_TIME_MIN + Math.floor(Math.random() * (SPAWN_TIME_MAX - SPAWN_TIME_MIN));
     }
     const spawnSpecialApple = () => {
-        gameSpawnApple(AppleType.LONGER);
-        despawnCounter = 50;
+        gameSpawnApple(
+            specialAppleTypes[Math.floor(Math.random() * specialAppleTypes.length)]
+        );
+        despawnCounter = DESPAWN_TIME;
     }
     
     const update = () => {
@@ -50,7 +58,10 @@ const makeAppleDispatcher = ({gameSpawnApple}) => {
             apple.draw(props)
         }
         if (specialApple !== undefined) {
-            specialApple.draw(props)
+            // Blinks after half of despawn time is over
+            if (despawnCounter >= DESPAWN_TIME / 2 || despawnCounter % 4 <= 1) {
+                specialApple.draw(props)
+            }
         }
     }
 
