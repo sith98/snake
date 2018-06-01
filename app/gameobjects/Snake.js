@@ -65,7 +65,7 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
         snake.pop();
     }
 
-    const update = (apples, gameOnAppleEaten, onSnakeDead) => {
+    const update = ({apples, gameOnAppleEaten, onSnakeDead}) => {
         addHead();
         
         const [head, ...rest] = snake;

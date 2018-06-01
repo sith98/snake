@@ -1,3 +1,5 @@
+// made by Simon Thelen
+
 const game = (function () {
     let canvas;
     let ctx;

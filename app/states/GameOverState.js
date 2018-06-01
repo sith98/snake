@@ -8,6 +8,8 @@ const makeGameOverState = ({canvasSize, ctx, startState, saveGame}, {score, back
     const centerY = canvasSize / 2;
 
     const draw = () => {
+        // "Screenshot" of the last frame of the game
+        // with a black transparent overlay
         ctx.putImageData(background, 0, 0);
         ctx.fillStyle = "rgba(0, 0, 0, 0.5)"
         ctx.fillRect(0, 0, canvasSize, canvasSize);

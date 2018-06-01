@@ -62,7 +62,7 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
         // for collision detection
         // It also receives callbacks to let the state know when it has
         // eaten an apple or has died
-        snake.update(appleDispatcher.apples, onAppleEaten, onSnakeDead);
+        snake.update({apples: appleDispatcher.apples, gameOnAppleEaten: onAppleEaten, onSnakeDead});
         appleDispatcher.update();
     }
 

@@ -1,4 +1,5 @@
-/* Start the Snake game from here! */
+// made by Simon Thelen
+
 "use strict";
 window.onload = function() {
 	var canvas = document.querySelector("#canvas");
