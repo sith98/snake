@@ -129,14 +129,19 @@ const makeSnake = ({gameWidth, gameHeight, startDir = Dir.RIGHT, startLength = 3
     const onAppleEaten = (apple) => {
         switch (apple.type) {
             case AppleType.NORMAL:
-                tailIncrementer = 1;
+                tailIncrementer += 1;
+                break;
+            case AppleType.SLOWER:
+            case AppleType.FASTER:
+                tailIncrementer += 2;
                 break;
             case AppleType.LONGER:
-                tailIncrementer = 5;
+                tailIncrementer += 10;
                 break;
             case AppleType.REVERSE:
-                tailIncrementer = 1;
+                tailIncrementer += 1;
                 reverseSnake();
+                break;
         }
     }
 
