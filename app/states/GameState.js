@@ -96,8 +96,12 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame, soundPlayer}) => 
     const onAppleEaten = (apple) => {
         snake.onAppleEaten(apple);
         counter.onAppleEaten(apple);
-        appleDispatcher.onAppleEaten(apple)
-        soundPlayer.play("apple");
+        appleDispatcher.onAppleEaten(apple);
+        if (apple.type === AppleType.NORMAL) {
+            soundPlayer.play("apple");
+        } else {
+            soundPlayer.play("powerup");
+        }
 
         switch (apple.type) {
             case AppleType.FASTER:

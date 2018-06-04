@@ -1,5 +1,5 @@
 const makeSoundPlayer = () => {
-    const soundKeys = ["apple", "death"];
+    const soundKeys = ["apple", "death", "powerup"];
     const sounds = {};
 
     const context = new AudioContext();
