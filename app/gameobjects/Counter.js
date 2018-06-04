@@ -37,10 +37,10 @@ const makeCounter = ({saveGame}) => {
         ctx.fillText(value, canvasSize / 2, gridSize * 3);
     };
 
-    return {
+    return Object.freeze({
         onAppleEaten,
         draw,
         get value() { return value; },
         get isNewHighscore() { return isNewHighscore; }
-    };
+    });
 }

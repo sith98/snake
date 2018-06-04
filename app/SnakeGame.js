@@ -9,6 +9,8 @@ const game = (function () {
     let state;
     // Permenantly stores highscore
     let saveGame;
+    // plays sounds (duh)
+    let soundPlayer
 
     // both width and height of the canvas
     const CANVAS_SIZE = 510;
@@ -22,9 +24,11 @@ const game = (function () {
         ctx = canvas.getContext("2d");
         
         saveGame = makeSaveGame();
-        
+
+        soundPlayer = makeSoundPlayer();
+
         document.body.addEventListener("keydown", onKeyDown)
-        startGame();
+        soundPlayer.load().then(startGame);
     }
 
 
@@ -41,6 +45,7 @@ const game = (function () {
             ctx,
             saveGame,
             startState,
+            soundPlayer,
         })
 
         // Provides default implementations in case a state does not implement
@@ -72,8 +77,7 @@ const game = (function () {
         state.onKeyDown(evt)
     }
 
-
-    return {
+    return Object.freeze({
         init
-    };
+    });
 })();

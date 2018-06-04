@@ -2,6 +2,6 @@
 
 "use strict";
 window.onload = () => {
-	var canvas = document.querySelector("#canvas");
+	const canvas = document.querySelector("#canvas");
 	game.init(canvas);
 }

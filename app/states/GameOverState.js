@@ -26,7 +26,7 @@ const makeGameOverState = ({canvasSize, ctx, startState, saveGame}, {score, back
 
         // Animation if this has been a new highscore
         if (isNewHighscore) {
-            const fontSize = size3 * (1 + 0.2 * Math.sin(Date.now() * 0.004));
+            const fontSize = size3 * interpolate(Math.sin(Date.now() * 0.004), -1, 1, 0.8, 1.2);
             ctx.font = fontSize + "px Arial";
             ctx.fillText("New Highscore!", centerY, canvasSize * 0.55)
         } else {

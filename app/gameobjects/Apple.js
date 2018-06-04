@@ -15,7 +15,7 @@ const makeApple = (x, y, type = AppleType.NORMAL) => {
     const point = makePoint(x, y);
 
     const drawNormal = ({ctx, gridSize}) => {
-        const radius = gridSize * (0.4 + Math.sin(Date.now() / 150) * 0.1)
+        const radius = gridSize * interpolate(Math.sin(Date.now() / 150), -1, 1, 0.3, 0.5)
         ctx.fillStyle = "red";
         ctx.beginPath();
         ctx.arc(

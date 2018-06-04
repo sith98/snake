@@ -1,4 +1,4 @@
-const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
+const makeGameState = ({canvasSize, ctx, startState, saveGame, soundPlayer}) => {
     // Number of columns
     const WIDTH = 30;
     // Number of rows
@@ -97,7 +97,8 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
         snake.onAppleEaten(apple);
         counter.onAppleEaten(apple);
         appleDispatcher.onAppleEaten(apple)
-        
+        soundPlayer.play("apple");
+
         switch (apple.type) {
             case AppleType.FASTER:
                 setFps(FAST_FPS, 80);
@@ -109,6 +110,7 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame}) => {
     }
     
     const onSnakeDead = () => {
+        soundPlayer.play("death");
         endGame()
     }
 
