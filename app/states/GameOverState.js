@@ -1,4 +1,4 @@
-const makeGameOverState = ({canvasSize, ctx, startState, saveGame}, {score, background, isNewHighscore}) => {
+const makeGameOverState = ({canvasSize, ctx, startState, saveGame, soundPlayer}, {score, background, isNewHighscore}) => {
     // the four font sizes
     const size1 = canvasSize / 10
     const size2 = canvasSize / 15
@@ -6,6 +6,11 @@ const makeGameOverState = ({canvasSize, ctx, startState, saveGame}, {score, back
     const size4 = canvasSize / 20
 
     const centerY = canvasSize / 2;
+
+    if (isNewHighscore) {
+        soundPlayer.play("highscore", {delay: 0.1});
+    }
+    soundPlayer.stop("apple")
 
     const draw = () => {
         // "Screenshot" of the last frame of the game
