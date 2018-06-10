@@ -14,26 +14,27 @@ const AppleType = Object.freeze({
 const makeApple = (x, y, type = AppleType.NORMAL) => {
     const point = makePoint(x, y);
 
-    const drawNormal = ({ctx, gridSize}) => {
-        const radius = gridSize * interpolate(Math.sin(Date.now() / 150), -1, 1, 0.3, 0.5)
-        ctx.fillStyle = "red";
-        ctx.beginPath();
-        ctx.arc(
-            (x + 0.5) * gridSize,
-            (y + 0.5) * gridSize,
-            radius,
-            0, 2 * Math.PI
+    const drawNormal = ({ctx, gridSize, imageLoader}) => {
+        const factor = interpolate(Math.sin(Date.now() / 150), -1, 1, 0.8, 1.2);
+
+        ctx.drawImage(
+            imageLoader.getImage("apple"),
+            (x + 0.5 - factor / 2) * gridSize,
+            (y + 0.5 - factor / 2) * gridSize,
+            gridSize * factor,
+            gridSize * factor
         );
-        ctx.fill();
     }
     
-    const drawSpecial = ({ctx, gridSize}) => {
-        const size = Math.sqrt(2 * (gridSize * 0.5) * (gridSize * 0.5))
+    const drawSpecial = ({ctx, gridSize, imageLoader}) => {
         ctx.save();
         ctx.fillStyle = "yellow";
         ctx.translate((x + 0.5) * gridSize, (y + 0.5) * gridSize);
         ctx.rotate((Date.now() * 0.002) % (2 * Math.PI));
-        ctx.fillRect(-size * 0.5, -size * 0.5, size, size);
+        ctx.drawImage(
+            imageLoader.getImage("star"),
+            -gridSize / 2, -gridSize / 2, gridSize, gridSize
+        )
         ctx.restore();
     }
 

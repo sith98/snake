@@ -1,4 +1,4 @@
-const makeGameState = ({canvasSize, ctx, startState, saveGame, soundPlayer}) => {
+const makeGameState = ({canvasSize, ctx, startState, saveGame, soundPlayer, imageLoader}) => {
     // Number of columns
     const WIDTH = 30;
     // Number of rows
@@ -53,7 +53,8 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame, soundPlayer}) => 
 
     const internalUpdate = () => {
         // Resets fps to normal when timer has reached zero
-        if (fpsTimer === 0) {
+        if (fpsTimer === 0 && fps !== NORMAL_FPS) {
+            soundPlayer.play("powerup_reset");
             setFps(NORMAL_FPS);
         } else {
             fpsTimer -= 1;
@@ -71,11 +72,12 @@ const makeGameState = ({canvasSize, ctx, startState, saveGame, soundPlayer}) => 
         const drawProps = Object.freeze({
             canvasSize,
             ctx,
-            gridSize: GRID_SIZE
+            gridSize: GRID_SIZE,
+            imageLoader,
         })
 
-        snake.draw(drawProps);
         appleDispatcher.draw(drawProps);
+        snake.draw(drawProps);
         counter.draw(drawProps);
     }
 

@@ -9,11 +9,13 @@ const game = (function () {
     let state;
     // Permenantly stores highscore
     let saveGame;
-    // plays sounds (duh)
-    let soundPlayer
+    // loads and stores images
+    let imageLoader;
+    // loads, stores and plays sounds
+    let soundPlayer;
 
     // both width and height of the canvas
-    const CANVAS_SIZE = 510;
+    const CANVAS_SIZE = 600;
 
     const init = (canvasElement) => {
         canvas = canvasElement;
@@ -25,10 +27,12 @@ const game = (function () {
         
         saveGame = makeSaveGame();
 
+        imageLoader = makeImageLoader();
+
         soundPlayer = makeSoundPlayer();
 
         document.body.addEventListener("keydown", onKeyDown)
-        soundPlayer.load().then(startGame);
+        Promise.all([imageLoader.load(), soundPlayer.load()]).then(startGame);
     }
 
 
@@ -45,6 +49,7 @@ const game = (function () {
             ctx,
             saveGame,
             startState,
+            imageLoader,
             soundPlayer,
         })
 
